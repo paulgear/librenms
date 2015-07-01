@@ -25,7 +25,7 @@ $poller_start = utime();
 echo $config['project_name_version']." Poller\n";
 echo get_last_commit()."\n";
 
-$options = getopt('h:m:i:n:r::d::a::');
+$options = getopt('h:m:i:n:r::f::d::a::');
 
 if ($options['h'] == 'odd') {
     $options['n'] = '1';
@@ -50,6 +50,15 @@ else if ($options['h']) {
     }
 }
 
+// add -f for force
+if (isset($options['f'])) {
+    $disabled_where = "";
+    $where = str_replace("AND", "WHERE", $where);
+}
+else {
+    $disabled_where = "WHERE `disabled` = 0 ";
+}
+
 if (isset($options['i']) && $options['i'] && isset($options['n'])) {
     $where = true;
     // FIXME
@@ -57,7 +66,7 @@ if (isset($options['i']) && $options['i'] && isset($options['n'])) {
         (
             SELECT @rownum := @rownum +1 AS rownum, `device_id`
             FROM `devices`
-            WHERE `disabled` = 0
+            '.$disabled_where.'
             ORDER BY `device_id` ASC
         ) temp
         WHERE MOD(temp.rownum, '.mres($options['i']).') = '.mres($options['n']).';';
@@ -105,7 +114,7 @@ rrdtool_pipe_open($rrd_process, $rrd_pipes);
 echo "Starting polling run:\n\n";
 $polled_devices = 0;
 if (!isset($query)) {
-    $query = "SELECT `device_id` FROM `devices` WHERE `disabled` = 0 $where ORDER BY `device_id` ASC";
+    $query = "SELECT `device_id` FROM `devices` ".$disabled_where."$where ORDER BY `device_id` ASC";
 }
 
 foreach (dbFetch($query) as $device) {
