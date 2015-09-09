@@ -51,6 +51,7 @@ else if ($options['h']) {
 }
 
 // add -f for force
+// FIXME: This is a horrible hacky hack of which I am thoroughly ashamed.
 if (isset($options['f'])) {
     $disabled_where = "";
     $where = str_replace("AND", "WHERE", $where);
