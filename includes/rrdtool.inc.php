@@ -22,7 +22,8 @@
  */
 
 
-function rrdtool_pipe_open(&$rrd_process, &$rrd_pipes) {
+function rrdtool_pipe_open(&$rrd_process, &$rrd_pipes)
+{
     global $config;
 
     $command = $config['rrdtool'].' -';
@@ -73,7 +74,8 @@ function rrdtool_pipe_open(&$rrd_process, &$rrd_pipes) {
  */
 
 
-function rrdtool_pipe_close($rrd_process, &$rrd_pipes) {
+function rrdtool_pipe_close($rrd_process, &$rrd_pipes)
+{
     d_echo(stream_get_contents($rrd_pipes[1]));
     d_echo(stream_get_contents($rrd_pipes[2]));
 
@@ -100,7 +102,8 @@ function rrdtool_pipe_close($rrd_process, &$rrd_pipes) {
  */
 
 
-function rrdtool_graph($graph_file, $options) {
+function rrdtool_graph($graph_file, $options)
+{
     global $config, $debug;
 
     rrdtool_pipe_open($rrd_process, $rrd_pipes);
@@ -163,7 +166,8 @@ function rrdtool_graph($graph_file, $options) {
  */
 
 
-function rrdtool($command, $filename, $options) {
+function rrdtool($command, $filename, $options)
+{
     global $config, $debug, $rrd_pipes, $console_color;
 
     if ($config['rrdcached'] && ($config['rrdtool_version'] >= 1.5 || $command != "create")) {
@@ -205,7 +209,8 @@ function rrdtool($command, $filename, $options) {
  */
 
 
-function rrdtool_create($filename, $options) {
+function rrdtool_create($filename, $options)
+{
     global $config;
     if( $config['rrdcached'] && $config['rrdtool_version'] >= 1.5 ) {
         $chk = rrdtool('info', $filename, '');
@@ -298,7 +303,8 @@ function rrdtool_escape($string, $maxlength=null){
  * @param host Host name
  * @param extra Components of RRD filename - will be separated with "-"
  */
-function rrd_name($host, $extra, $exten = ".rrd") {
+function rrd_name($host, $extra, $exten = ".rrd")
+{
     global $config;
     $filename = safename(is_array($extra) ? implode("-", $extra) : $extra);
     return implode("/", array($config['rrd_dir'], $host, $filename.$exten));
@@ -313,7 +319,8 @@ function rrd_name($host, $extra, $exten = ".rrd") {
  * @param val Array of value definitions
  *
  */
-function rrd_create_update($device, $name, $def, $val, $step=300) {
+function rrd_create_update($device, $name, $def, $val, $step=300)
+{
     global $config;
     $rrd = rrd_name($device['hostname'], $name);
 
